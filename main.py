@@ -4,6 +4,7 @@ import pickle
 import sys
 
 import sentence_mixing.sentence_mixer as sm
+from sentence_mixing.model.exceptions import TokenAmbiguityError
 
 DIR = os.path.dirname(__file__)
 CONFIG_PATH = os.path.join(DIR, "config.json")
@@ -67,6 +68,11 @@ if __name__ == "__main__":
 
     sm.prepare_sm_config_file(CONFIG_PATH)
     videos = get_videos(video_urls, seed)
-    available_combos = sm.process_sm(sentence, videos)
-
-    print(serialize(available_combos, video_urls))
+    try:
+        available_combos = sm.process_sm(sentence, videos)
+        print(serialize(available_combos, video_urls))
+    except TokenAmbiguityError as e:
+        data = {
+            "word": e.token,
+        }
+        print(json.dumps(data))
