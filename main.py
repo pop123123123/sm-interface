@@ -1,6 +1,7 @@
 import json
 import os
 import pickle
+import sys
 
 import sentence_mixing.sentence_mixer as sm
 
@@ -29,7 +30,7 @@ def hash_str(string):
 
 
 def hash_project(video_urls, seed):
-    return sum(map(hash_str, video_urls)) + seed
+    return sum(map(hash_str, video_urls)) + hash_str(seed)
 
 
 def get_videos(video_urls, seed):
@@ -49,8 +50,8 @@ def serialize(combos, urls):
     data = [
         [
             {
-                "s": round(p.start),
-                "e": round(p.end),
+                "s": round(p.start, 3),
+                "e": round(p.end, 3),
                 "v": v_index[p.word.sentence.video.url],
             }
             for p in c.get_audio_phonems()
@@ -61,8 +62,8 @@ def serialize(combos, urls):
 
 
 if __name__ == "__main__":
-    video_urls, seed = ["_ZZ8oyZUGn8"], 4
-    sentence = "je vais te faire la tête au carré"
+    sentence, seed = sys.argv[1:3]
+    video_urls = sys.argv[3:]
 
     sm.prepare_sm_config_file(CONFIG_PATH)
     videos = get_videos(video_urls, seed)
