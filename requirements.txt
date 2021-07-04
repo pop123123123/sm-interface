@@ -1,1 +1,1 @@
-sentence_mixing==1.3.0
+sentence_mixing==1.3.1

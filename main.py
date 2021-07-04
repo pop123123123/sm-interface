@@ -37,12 +37,12 @@ def hash_project(video_urls, seed):
 def get_videos(video_urls, seed):
     f_name = f"{hash_project(video_urls, seed)}.pckl"
 
-    videos = None
     try:
-        return load(f_name)[0]
+        videos, sm.SEED, sm.GET_VIDEO_RANDOM = load(f_name)[0]
+        return videos
     except Exception:
         videos = sm.get_videos(video_urls, seed)
-        save(videos, name=f_name)
+        save(videos, sm.SEED, sm.GET_VIDEO_RANDOM, name=f_name)
         return videos
 
 
