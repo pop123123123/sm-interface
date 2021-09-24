@@ -2,6 +2,7 @@ import json
 import os
 import pickle
 import sys
+from pathlib import Path
 
 import sentence_mixing.sentence_mixer as sm
 from sentence_mixing.model.exceptions import TokenAmbiguityError
@@ -26,6 +27,22 @@ def load(name="save.pckl"):
         return pickle.load(f)
 
 
+LOCK_PATH = "./lock"
+
+
+def lock(id):
+    while True:
+        try:
+            Path(LOCK_PATH + str(id)).touch()
+            break
+        except FileExistsError:
+            os.sleep(200)
+
+
+def unlock(id):
+    Path(LOCK_PATH + str(id)).unlink()
+
+
 def hash_str(string):
     return sum(ord(c) for u in video_urls for c in u)
 
@@ -35,15 +52,20 @@ def hash_project(video_urls, seed):
 
 
 def get_videos(video_urls, seed):
-    f_name = f"{hash_project(video_urls, seed)}.pckl"
+    id = hash_project(video_urls, seed)
+    f_name = f"{id}.pckl"
 
+    videos = None
     try:
-        videos, sm.SEED, sm.GET_VIDEO_RANDOM = load(f_name)[0]
-        return videos
-    except Exception:
+        lock(id)
+        print(load(f_name))
+        videos, sm.SEED, sm.GET_VIDEO_RANDOM = load(f_name)
+    except FileNotFoundError:
         videos = sm.get_videos(video_urls, seed)
         save(videos, sm.SEED, sm.GET_VIDEO_RANDOM, name=f_name)
-        return videos
+    finally:
+        unlock(id)
+    return videos
 
 
 def serialize(combos, urls):
