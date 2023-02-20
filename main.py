@@ -40,7 +40,10 @@ def lock(id):
 
 
 def unlock(id):
-    Path(LOCK_PATH + str(id)).unlink()
+    try:
+        Path(LOCK_PATH + str(id)).unlink()
+    except FileNotFoundError:
+        print('oops, maybe this should not have happened', id)
 
 
 def hash_str(string):
