@@ -1,0 +1,10 @@
+{
+  "dict_path": "/home/mfa/Documents/MFA/pretrained_models/dictionary/french_mfa.dict",
+  "align_exe": "mfa align",
+  "trained_model": "french_mfa",
+  "lang": "fr",
+  "dict_consonant_vowel_path": "./fr_consonant_vowel.dict",
+  "folder": "./subs",
+  "g2p_exe": "mfa g2p",
+  "g2p_model": "french_mfa"
+}

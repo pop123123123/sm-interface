@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /home/mfa/websm/sm-interface
+python ./main.py "$@"
